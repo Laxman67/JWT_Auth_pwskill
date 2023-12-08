@@ -1,6 +1,9 @@
 const express = require("express");
 const authRouter = require("./router/authRoute");
+const databaseConnect = require("./config/databaseConfig");
 const app = express();
+
+databaseConnect();
 
 app.use(express.json());
 
