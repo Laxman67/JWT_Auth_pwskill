@@ -1,5 +1,6 @@
 const userModel = require("../model/userSchema");
 const emailvalidator = require("email-validator");
+const bcrypt = require("bcrypt");
 
 const signup = async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
@@ -40,6 +41,7 @@ const signup = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
+    /// Error if Account Already Exist
     if (error.code === 11000) {
       return res.status(404).json({
         success: false,
@@ -71,7 +73,7 @@ const signin = async (req, res, next) => {
       })
       .select("+password");
 
-    if (!user || !bcrypt.compare(password, user.password)) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(404).json({
         success: false,
         message: " Invalid Credientails",
